@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Barcode Capture</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string-array name="Spinner1">
+        <item>Dispatch</item>
+        <item>Receive</item>
+    </string-array>
+
+    <string-array name="Spinner2">
+        <item>Empty</item>
+        <item>Full</item>
+    </string-array>
+    <string name="title_activity_home">HomeActivity</string>
+</resources>
