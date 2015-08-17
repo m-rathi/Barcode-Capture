@@ -1,5 +1,6 @@
 package demo.com.barcodecapture;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.hardware.Camera;
 import android.os.Handler;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import net.sourceforge.zbar.Config;
@@ -28,9 +30,9 @@ public class MainActivity extends ActionBarActivity {
     private CameraPreview mPreview;
     private Handler autoFocusHandler;
 
-    private Button scanButton;
+    private Button scanButton,back;
     private ImageScanner scanner;
-
+TextView t1;
     private boolean barcodeScanned = false;
     private boolean previewing = true;
     private ArrayAdapter<String> adapter;
@@ -39,6 +41,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
         initControls();
+        t1=(TextView)findViewById(R.id.textView2);
     }
 
     private void initControls() {
@@ -133,11 +136,29 @@ public class MainActivity extends ActionBarActivity {
                     Log.i("<<<<<<Asset Code>>>>> ",
                             "<<<<Bar Code>>> " + sym.getData());
                     String scanResult = sym.getData().trim();
+                    t1.setText(scanResult);
+                    back=(Button)findViewById(R.id.back);
+                    back.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    t1=(TextView)findViewById(R.id.textView2);
+                                                    String passingData=t1.getText().toString();
+                                                    Intent i1=new Intent(view.getContext(),HomeActivity.class);
+                                                    i1.putExtra("mytext",passingData);
+                                                    startActivity(i1);
+                                                }
+                                            }
+
+
+                    );
                    // scanResult.add();
                    // adapter = new ArrayAdapter<String>(HomeActivity.class,R.id.listView,scanResult);
                  //   listView.setAdapter(adapter);
-                    Toast.makeText(MainActivity.this, scanResult,
-                            Toast.LENGTH_SHORT).show();
+//                    Intent intent =new Intent(this,HomeActivity.class);
+//                    intent.putExtra("scan Results",scanResult);
+//                    startActivity(intent);
+//                    Toast.makeText(MainActivity.this, scanResult,
+//                            Toast.LENGTH_SHORT).show();
 
                     barcodeScanned = true;
 
