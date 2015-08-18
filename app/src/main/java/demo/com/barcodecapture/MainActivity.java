@@ -32,7 +32,7 @@ public class MainActivity extends ActionBarActivity {
 
     private Button scanButton,back;
     private ImageScanner scanner;
-TextView t1;
+TextView t1,t2;
     private boolean barcodeScanned = false;
     private boolean previewing = true;
     private ArrayAdapter<String> adapter;
@@ -42,6 +42,7 @@ TextView t1;
         setContentView(R.layout.home);
         initControls();
         t1=(TextView)findViewById(R.id.textView2);
+        t2=(TextView)findViewById(R.id.t2);
     }
 
     private void initControls() {
@@ -123,6 +124,9 @@ TextView t1;
             Image barcode = new Image(size.width, size.height, "Y800");
             barcode.setData(data);
 
+
+
+
             int result = scanner.scanImage(barcode);
 
             if (result != 0) {
@@ -136,21 +140,37 @@ TextView t1;
                     Log.i("<<<<<<Asset Code>>>>> ",
                             "<<<<Bar Code>>> " + sym.getData());
                     String scanResult = sym.getData().trim();
+                    String scanResult1 = sym.getData().trim();
+
                     t1.setText(scanResult);
+                    t2.setText(scanResult1);
                     back=(Button)findViewById(R.id.back);
                     back.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View view) {
                                                     t1=(TextView)findViewById(R.id.textView2);
+                                                    TextView t2=(TextView)findViewById(R.id.t2);
                                                     String passingData=t1.getText().toString();
+                                                    String passingData1=t2.getText().toString();
+
                                                     Intent i1=new Intent(view.getContext(),HomeActivity.class);
                                                     i1.putExtra("mytext",passingData);
+                                                    i1.putExtra("mytext1",passingData1);
                                                     startActivity(i1);
+
                                                 }
+
                                             }
 
 
                     );
+
+
+
+
+
+
+
                    // scanResult.add();
                    // adapter = new ArrayAdapter<String>(HomeActivity.class,R.id.listView,scanResult);
                  //   listView.setAdapter(adapter);

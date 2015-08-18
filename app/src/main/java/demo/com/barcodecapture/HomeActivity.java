@@ -1,6 +1,7 @@
 package demo.com.barcodecapture;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -19,16 +20,20 @@ import android.widget.Toast;
 
 
 public class HomeActivity extends ActionBarActivity implements View.OnClickListener {
-    private Button scanButton, sendButton;
-    String[] location,location1;
+    private Button scanButton, sendButton,addButton;
+    String[] location, location1,location2;
     String barcode;
     int index;
-    String mSelectedItem,mSelectedItem1;
+    String mSelectedItem, mSelectedItem1,mSelectedItem2;
+
 
     //ListView lv = (ListView) findViewById(R.id.listView);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         setContentView(R.layout.activity_main);
 
         scanButton = (Button) findViewById(R.id.button);
@@ -37,11 +42,16 @@ public class HomeActivity extends ActionBarActivity implements View.OnClickListe
         sendButton = (Button) findViewById(R.id.send);
         sendButton.setOnClickListener(this);
 
-        TextView tv = (TextView) findViewById(R.id.barcode);
+        addButton = (Button) findViewById(R.id.add);
+        addButton.setOnClickListener(this);
+
+
+       TextView tv = (TextView) findViewById(R.id.barcode);
         tv.setText(getIntent().getStringExtra("mytext"));
 
-        location = getResources().getStringArray(R.array.Spinner1);
-        Spinner s1 = (Spinner) findViewById(R.id.spinner1);
+
+        location = getResources().getStringArray(R.array.spinner3);
+        Spinner s1 = (Spinner) findViewById(R.id.process);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.my_spinner_item, location);
         s1.setAdapter(adapter);
         s1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -49,7 +59,7 @@ public class HomeActivity extends ActionBarActivity implements View.OnClickListe
                 index = arg0.getSelectedItemPosition();
                 //OR you can also store selected item using below line.
                 mSelectedItem = arg0.getSelectedItem().toString();
-               // Toast.makeText(getBaseContext(), "You have selected " + location[index], Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getBaseContext(), "You have selected " + location[index], Toast.LENGTH_SHORT).show();
             }
 
             public void onNothingSelected(AdapterView<?> arg0) {
@@ -57,16 +67,33 @@ public class HomeActivity extends ActionBarActivity implements View.OnClickListe
             }
 
         });
-        location1 = getResources().getStringArray(R.array.Spinner2);
-        Spinner s2 = (Spinner) findViewById(R.id.spinner2);
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, R.layout.my_spinner_item, location1);
-        s2.setAdapter(adapter2);
+        location1 = getResources().getStringArray(R.array.spinner2);
+        Spinner s2 = (Spinner) findViewById(R.id.status);
+        ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(this, R.layout.my_spinner_item, location1);
+        s2.setAdapter(adapter3);
         s2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 index = arg0.getSelectedItemPosition();
                 //OR you can also store selected item using below line.
                 mSelectedItem1 = arg0.getSelectedItem().toString();
-               // Toast.makeText(getBaseContext(), "You have selected " + location1[index], Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getBaseContext(), "You have selected " + location1[index], Toast.LENGTH_SHORT).show();
+            }
+
+            public void onNothingSelected(AdapterView<?> arg0) {
+
+            }
+
+        });
+        location2 = getResources().getStringArray(R.array.spinner1);
+        Spinner s3 = (Spinner) findViewById(R.id.order);
+        ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(this, R.layout.my_spinner_item, location2);
+        s3.setAdapter(adapter4);
+        s3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                index = arg0.getSelectedItemPosition();
+                //OR you can also store selected item using below line.
+                mSelectedItem2 = arg0.getSelectedItem().toString();
+                // Toast.makeText(getBaseContext(), "You have selected " + location1[index], Toast.LENGTH_SHORT).show();
             }
 
             public void onNothingSelected(AdapterView<?> arg0) {
@@ -96,9 +123,10 @@ public class HomeActivity extends ActionBarActivity implements View.OnClickListe
                 sendSMS();
                 break;
 
-//            case R.id.threeButton:
-//                // do your code
-//                break;
+            case R.id.add:
+                addTolist();
+                // do your code
+                break;
 
             default:
                 break;
@@ -120,18 +148,44 @@ public class HomeActivity extends ActionBarActivity implements View.OnClickListe
 //        }
 //    }
 //
+
+    protected void addTolist(){
+
+        String barcodeArray []={barcode,barcode,"barcode"};
+        ArrayAdapter adapter2 = new ArrayAdapter<String>(this, R.layout.list_item, barcodeArray);
+
+        ListView listView = (ListView) findViewById(R.id.listView);
+        listView.setAdapter(adapter2);
+    }
     protected void sendSMS() {
         Log.i("Send SMS", "");
+        //TextView tv = (TextView) findViewById(R.id.barcode);
+
+        //String barcode = tv.getText().toString();
+
+
         TextView tv = (TextView) findViewById(R.id.barcode);
 
-        String barcode=tv.getText().toString();
+        String barcode = tv.getText().toString();
+
+        String barcodeArray []={barcode,barcode,"barcode"};
+        ArrayAdapter adapter2 = new ArrayAdapter<String>(this, R.layout.list_item, barcodeArray);
+
+        ListView listView = (ListView) findViewById(R.id.listView);
+        listView.setAdapter(adapter2);
         Intent smsIntent = new Intent(Intent.ACTION_VIEW);
 
         smsIntent.setData(Uri.parse("smsto:"));
         smsIntent.setType("vnd.android-dir/mms-sms");
         smsIntent.putExtra("address", new String(""));
-        if(barcode!=null) {
-            smsIntent.putExtra("sms_body", "Process:" + location[index] + " " + "Status:" + location1[index] + " " + "Serial No:" + barcode);
+        if (barcode != null) {
+            smsIntent.putExtra("sms_body","User:"+"Mayuri"+" "+"Customer:"+"Company"+""+"Order"+location2[index]+"Process:" + location[index] + " " + "Status:" + location1[index] + " " + "Serial No:" + barcode);
+        }
+
+        else{
+           // Toast toast = Toast.makeText(getApplicationContext(), "scan data is not available ", Toast.LENGTH_LONG);
+
+
         }
         try {
             startActivity(smsIntent);

@@ -3,14 +3,23 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string-array name="Spinner1">
+    <string-array name="spinner1">
+
+        <item>123456</item>
+        <item>675438</item>
+        <item>672568</item>
+        <item>653289</item>
+    </string-array>
+    <string-array name="spinner2">
+        <item>Empty</item>
+        <item>Full</item>
+    </string-array>
+
+    <string-array name="spinner3">
         <item>Dispatch</item>
         <item>Receive</item>
     </string-array>
 
-    <string-array name="Spinner2">
-        <item>Empty</item>
-        <item>Full</item>
-    </string-array>
+
     <string name="title_activity_home">HomeActivity</string>
 </resources>
