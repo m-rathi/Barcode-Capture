@@ -1,5 +1,6 @@
 package demo.com.barcodecapture;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -13,27 +14,44 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 
-public class HomeActivity extends ActionBarActivity implements View.OnClickListener {
+
+public class HomeActivity extends Activity implements View.OnClickListener,Serializable {
     private Button scanButton, sendButton,addButton;
     String[] location, location1,location2;
     String barcode;
     int index;
     String mSelectedItem, mSelectedItem1,mSelectedItem2;
+    ArrayList<String> barcodes;
+    ArrayAdapter<String> adapter2;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ArrayList<String> barcodes = outState.getStringArrayList("barcodes");
+        if(barcodes == null) {
+            barcodes = new ArrayList<String>();
+        }
+        TextView tv = (TextView) findViewById(R.id.barcode);
+        barcodes.add(tv.getText().toString());
+        outState.putStringArrayList("barcodes", barcodes);
+        super.onSaveInstanceState(outState);
+    }
+
 
 
     //ListView lv = (ListView) findViewById(R.id.listView);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
         setContentView(R.layout.activity_main);
 
         scanButton = (Button) findViewById(R.id.button);
@@ -45,64 +63,55 @@ public class HomeActivity extends ActionBarActivity implements View.OnClickListe
         addButton = (Button) findViewById(R.id.add);
         addButton.setOnClickListener(this);
 
+        Bundle bundle = getIntent().getExtras();
 
-       TextView tv = (TextView) findViewById(R.id.barcode);
-        tv.setText(getIntent().getStringExtra("mytext"));
+        String value2 = bundle != null ? bundle.getString("BARCODE") : "12345";
+        // ArrayList<String> barcodes = null;
 
+        ArrayList<String> barcodes = null;
 
-        location = getResources().getStringArray(R.array.spinner3);
-        Spinner s1 = (Spinner) findViewById(R.id.process);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.my_spinner_item, location);
-        s1.setAdapter(adapter);
-        s1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                index = arg0.getSelectedItemPosition();
-                //OR you can also store selected item using below line.
-                mSelectedItem = arg0.getSelectedItem().toString();
-                // Toast.makeText(getBaseContext(), "You have selected " + location[index], Toast.LENGTH_SHORT).show();
-            }
+        if (!(savedInstanceState != null && savedInstanceState.getStringArrayList("barcodes") == null)) {
+            barcodes = new ArrayList<String>();
+            barcodes.add(value2);
+        } else {
+            barcodes = savedInstanceState.getStringArrayList("barcodes");
+        }
+        String bacodeList = "";
+        for (String barcode : barcodes) {
+            bacodeList += barcode;
+            ArrayAdapter adapter2 = new ArrayAdapter<String>(this, R.layout.list_item, barcodes);
 
-            public void onNothingSelected(AdapterView<?> arg0) {
+            ListView listView = (ListView) findViewById(R.id.listView);
+            listView.setAdapter(adapter2);
+        }}
+//        TextView tv = (TextView) findViewById(R.id.barcode);
+//        tv.setText(bacodeList);
 
-            }
+    protected void addItemList() {
+        TextView tv = (TextView) findViewById(R.id.barcode);
+        if (isInputValid(tv)) {
+            barcodes.add(0, tv.getText().toString());
+            tv.setText("");
 
-        });
-        location1 = getResources().getStringArray(R.array.spinner2);
-        Spinner s2 = (Spinner) findViewById(R.id.status);
-        ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(this, R.layout.my_spinner_item, location1);
-        s2.setAdapter(adapter3);
-        s2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                index = arg0.getSelectedItemPosition();
-                //OR you can also store selected item using below line.
-                mSelectedItem1 = arg0.getSelectedItem().toString();
-                // Toast.makeText(getBaseContext(), "You have selected " + location1[index], Toast.LENGTH_SHORT).show();
-            }
+            adapter2.notifyDataSetChanged();
 
-            public void onNothingSelected(AdapterView<?> arg0) {
+        }
 
-            }
-
-        });
-        location2 = getResources().getStringArray(R.array.spinner1);
-        Spinner s3 = (Spinner) findViewById(R.id.order);
-        ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(this, R.layout.my_spinner_item, location2);
-        s3.setAdapter(adapter4);
-        s3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                index = arg0.getSelectedItemPosition();
-                //OR you can also store selected item using below line.
-                mSelectedItem2 = arg0.getSelectedItem().toString();
-                // Toast.makeText(getBaseContext(), "You have selected " + location1[index], Toast.LENGTH_SHORT).show();
-            }
-
-            public void onNothingSelected(AdapterView<?> arg0) {
-
-            }
-
-        });
-        //String barcode=getIntent().getStringExtra("mytext");
     }
+
+    protected boolean isInputValid(TextView tv) {
+        // TODO Auto-generatd method stub
+        if (tv.getText().toString().trim().length() < 1) {
+            tv.setError("Please Enter Item");
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+
+
 
     @Override
     public void onClick(View v) {
@@ -110,8 +119,10 @@ public class HomeActivity extends ActionBarActivity implements View.OnClickListe
         switch (v.getId()) {
 
             case R.id.button:
+
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
+addItemList();
                 // String barcode=tv.getText().toString();
 
                 break;
@@ -124,7 +135,7 @@ public class HomeActivity extends ActionBarActivity implements View.OnClickListe
                 break;
 
             case R.id.add:
-                addTolist();
+                //addTolist();
                 // do your code
                 break;
 
@@ -149,14 +160,19 @@ public class HomeActivity extends ActionBarActivity implements View.OnClickListe
 //    }
 //
 
-    protected void addTolist(){
-
-        String barcodeArray []={barcode,barcode,"barcode"};
-        ArrayAdapter adapter2 = new ArrayAdapter<String>(this, R.layout.list_item, barcodeArray);
-
-        ListView listView = (ListView) findViewById(R.id.listView);
-        listView.setAdapter(adapter2);
-    }
+//    protected void addTolist(){
+//
+//
+//        String barcodeArray []={barcode,barcode};
+//        ArrayAdapter adapter2 = new ArrayAdapter<String>(this, R.layout.list_item, barcodeArray);
+//
+//        ListView listView = (ListView) findViewById(R.id.listView);
+//        listView.setAdapter(adapter2);
+//
+//
+//
+//
+//    }
     protected void sendSMS() {
         Log.i("Send SMS", "");
         //TextView tv = (TextView) findViewById(R.id.barcode);
@@ -168,11 +184,11 @@ public class HomeActivity extends ActionBarActivity implements View.OnClickListe
 
         String barcode = tv.getText().toString();
 
-        String barcodeArray []={barcode,barcode,"barcode"};
-        ArrayAdapter adapter2 = new ArrayAdapter<String>(this, R.layout.list_item, barcodeArray);
-
-        ListView listView = (ListView) findViewById(R.id.listView);
-        listView.setAdapter(adapter2);
+//        String barcodeArray []={barcode,barcode,"barcode"};
+//        ArrayAdapter adapter2 = new ArrayAdapter<String>(this, R.layout.list_item, barcodeArray);
+//
+//        ListView listView = (ListView) findViewById(R.id.listView);
+//        listView.setAdapter(adapter2);
         Intent smsIntent = new Intent(Intent.ACTION_VIEW);
 
         smsIntent.setData(Uri.parse("smsto:"));

@@ -52,17 +52,20 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 
     public void surfaceCreated(SurfaceHolder holder) {
         // The Surface has been created, now tell the camera where to draw the preview.
-        try {
-            mCamera.setPreviewDisplay(holder);
-            mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        } catch (IOException e) {
+       try {
+           mCamera.setPreviewDisplay(holder);
+
+           mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+
+
+      //mCamera.setPreviewDisplay(holder);
+       //mCamera.startPreview();
+        } catch (Exception e) {
             Log.d("DBG", "Error setting camera preview: " + e.getMessage());
         }
     }
 
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        // Camera preview released in activity
-    }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         /*
@@ -75,7 +78,7 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         // stop preview before making changes
-        try {
+      try {
             mCamera.stopPreview();
         } catch (Exception e){
             // ignore: tried to stop a non-existent preview
@@ -84,7 +87,6 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
         try {
             // Hard code camera surface rotation 90 degs to match Activity view in portrait
             mCamera.setDisplayOrientation(90);
-
             mCamera.setPreviewDisplay(mHolder);
             mCamera.setPreviewCallback(previewCallback);
             mCamera.startPreview();
@@ -93,4 +95,15 @@ class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
             Log.d("DBG", "Error starting camera preview: " + e.getMessage());
         }
     }
+
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        // Surface will be destroyed when we return, so stop the preview.
+        // Because the CameraDevice object is not a shared resource, it's very
+        // important to release it when the activity is paused.
+        mCamera.setPreviewCallback(null);
+        mCamera.release();
+     //  mCamera.stopPreview();
+        mCamera = null;
+    }
+
 }

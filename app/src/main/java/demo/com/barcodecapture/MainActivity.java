@@ -47,7 +47,7 @@ TextView t1,t2;
 
     private void initControls() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
+        releaseCamera();
         autoFocusHandler = new Handler();
         mCamera = getCameraInstance();
 
@@ -61,7 +61,7 @@ TextView t1,t2;
         FrameLayout preview = (FrameLayout) findViewById(R.id.cameraPreview);
         preview.addView(mPreview);
 
-        scanButton = (Button) findViewById(R.id.ScanButton);
+       /* scanButton = (Button) findViewById(R.id.ScanButton);
 
         scanButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -75,7 +75,7 @@ TextView t1,t2;
                 }
             }
         });
-    }
+*/    }
 
 
     @Override
@@ -140,11 +140,21 @@ TextView t1,t2;
                     Log.i("<<<<<<Asset Code>>>>> ",
                             "<<<<Bar Code>>> " + sym.getData());
                     String scanResult = sym.getData().trim();
-                    String scanResult1 = sym.getData().trim();
+                   // String scanResult1 = sym.getData().trim();
 
-                    t1.setText(scanResult);
-                    t2.setText(scanResult1);
-                    back=(Button)findViewById(R.id.back);
+                    //t1.setText(scanResult);
+                    //t2.setText(scanResult1);
+
+                    Intent i1=new Intent(getApplication(),HomeActivity.class);
+                    i1.putExtra("BARCODE", scanResult);
+                   // i1.setFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
+
+                    //i1.putExtra("mytext1",passingData1);
+                    startActivity(i1);
+
+
+
+                   /* back=(Button)findViewById(R.id.back);
                     back.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View view) {
@@ -158,13 +168,14 @@ TextView t1,t2;
                                                     i1.putExtra("mytext1",passingData1);
                                                     startActivity(i1);
 
+
                                                 }
 
                                             }
 
 
                     );
-
+*/
 
 
 
